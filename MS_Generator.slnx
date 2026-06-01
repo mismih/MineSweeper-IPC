@@ -3,5 +3,6 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Project Path="MS_Client/MS_Client.vcxproj" Id="06155505-ed9d-4742-b8aa-844ed5f2a575" />
   <Project Path="MS_Generator/MS_Generator.vcxproj" Id="9eca4d50-dfcb-4e39-b389-fb432c42d27e" />
 </Solution>

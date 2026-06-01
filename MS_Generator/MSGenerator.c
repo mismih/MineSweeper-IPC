@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <zmq.h>
 #include "MSGenerator.h"
-
-
 
 void InitMatrix() {
 	for (int i = 0; i < nOfSpaces; i++) {
@@ -90,15 +89,34 @@ int main() {
 	srand((unsigned int)time(NULL));
 	InitMatrix();
 
-	userClick proba;
-	proba.x = 0;
-	proba.y = 9;
-	proba.type = 'r';
+	void* context = zmq_ctx_new();
+	void* responder = zmq_socket(context, ZMQ_REP);
 
-	printf("\nKlik na: (%d, %d)\n", proba.x, proba.y);
-	RevealCell(proba.x, proba.y);
+	int rc = zmq_bind(responder, "tcp://*:5555");
+	if (rc != 0) {
+		printf("Server start error\n");
+		return -1;
+	}
 
-	DisplayMatrix();
+	printf("Minesweeper server started succesfully and listening on port 5555....\n");
+
+	//printf("\nKlik na: (%d, %d)\n", proba.x, proba.y);
+	//RevealCell(9, 9);
+	//DisplayMatrix();
+
+	while (1) {
+		userClick primljeniClick;
+
+		zmq_recv(responder, &primljeniClick, sizeof(userClick), 0);
+		printf("Click recieved on: (%d, %d) type: %c\n", primljeniClick.x, primljeniClick.y, primljeniClick.type);
+
+		if (primljeniClick.type == 'r') {
+			RevealCell(primljeniClick.x, primljeniClick.y);
+		}
+
+		DisplayMatrix();
+		zmq_send(responder, displayMatrix, sizeof(displayMatrix), 0);
+	}
 
 	return 0;
 }
