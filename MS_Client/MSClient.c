@@ -1,55 +1,57 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <zmq.h>
+#include <raylib.h>
 #include "MSClient.h"
 
 int main() {
-	printf("Starting client...\n");
+	puts("Starting client...\n");
 
-	void* context = zmq_ctx_new();
+	void* context = zmq_ctx_new(); // opening connection
 	void* requester = zmq_socket(context, ZMQ_REQ);
 
-	int rc = zmq_connect(requester, "tcp://localhost:5555");
+	int rc = zmq_connect(requester, "tcp://localhost:5555"); // connecting on port 5555
 	if (rc != 0) {
-		printf("Couldnt connect to the server\n");
+		puts("Couldnt connect to the server\n");
 		zmq_close(requester);
 		zmq_ctx_destroy(context);
 		return -1;
 	}
 
-	userClick probniKlik;
+	userClick probniKlik; // test click
 	probniKlik.x = 0;
 	probniKlik.y = 0;
 	probniKlik.type = 'r';
 
-	zmq_send(requester, &probniKlik, sizeof(userClick), 0);
+	InitWindow(screenWidth, screenHeight, "minesweeper"); // raylib window initialize
+	SetTargetFPS(60);
+	
 
-	int primljenaMatrica[SIZE][SIZE];
-	zmq_recv(requester, primljenaMatrica, sizeof(primljenaMatrica), 0);
+	testDrawMatrix(); // draws the matrix in cmd to see if everythings ok
+	initGrids();
 
-	for (int i = 0; i < SIZE; i++) {
-		for (int j = 0; j < SIZE; j++) {
-			if (primljenaMatrica[i][j] == HIDDEN) {
-				printf("x ");
-			}
-			else if (primljenaMatrica[i][j] == -1) {
-				printf("* ");
-			}
-			else {
-				printf("%d ", primljenaMatrica[i][j]);
-			}
+	while (!WindowShouldClose()) {
+		BeginDrawing();
+
+		ClearBackground(RAYWHITE);
+		drawGrid(); // draws the placeholder for the mines
+
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+			Vector2 mousePoint = GetMousePosition();
+			whichFieldWasClicked(mousePoint);
+			probniKlik.x = clickX;
+			probniKlik.y = clickY;
+			zmq_send(requester, &probniKlik, sizeof(userClick), 0); // sending user click to server
+			zmq_recv(requester, primljenaMatrica, sizeof(primljenaMatrica), 0); // recieving the new matrix
 		}
-		putchar('\n');
+
+		EndDrawing();
 	}
 
+
+	CloseWindow();
 	zmq_close(requester);
 	zmq_ctx_destroy(context);
-
-	int ran = 3;
-	while (1) {
-		ran++;
-		ran--;
-	}
 
 	return 0;
 }
