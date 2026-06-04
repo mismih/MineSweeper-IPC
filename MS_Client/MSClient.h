@@ -17,15 +17,24 @@ int fieldsY[100];
 int matrix[SIZE][SIZE];
 int displayMatrix[SIZE][SIZE];
 int primljenaMatrica[SIZE][SIZE];
+int flagged[SIZE][SIZE];
 
 int clickX;
 int clickY;
+
+int flags = 13;
+
+float vremeAkumulator = 0.0f;
+int protekleSekunde = 0;
 
 typedef struct {
 	int x;
 	int y;
 	char type; // o - open  f - flag
 } userClick;
+
+bool over = false;
+bool retry = false;
 
 void drawGrid() {
 	int rows = 10;
@@ -39,8 +48,14 @@ void drawGrid() {
 			int x = fieldsX[pos];
 			int y = fieldsY[pos];
 
-			if (primljenaMatrica[i][j] == HIDDEN) {
+			if (primljenaMatrica[i][j] == HIDDEN && flagged[i][j] != 1) {
 				DrawRectangle(x, y, cellSize, cellSize, LIGHTGRAY);
+			} 
+			else if (primljenaMatrica[i][j] == 1 && over == true) {
+				DrawRectangle(x, y, cellSize, cellSize, RED);
+			}
+			else if (primljenaMatrica[i][j] == HIDDEN && flagged[i][j] == 1) {
+				DrawRectangle(x, y, cellSize, cellSize, RED);
 			}
 			else if (primljenaMatrica[i][j] == 1) {
 				DrawText(TextFormat("%d", primljenaMatrica[i][j]), x + 13, y + 2, cellSize, BLACK);
@@ -97,7 +112,7 @@ void initGrids() {
 	
 }
 
-void whichFieldWasClicked(Vector2 mousePoint) {
+bool whichFieldWasClicked(Vector2 mousePoint) {
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			int pos = i * 10 + j;
@@ -106,9 +121,51 @@ void whichFieldWasClicked(Vector2 mousePoint) {
 				clickX = i;
 				clickY = j;
 				printf("User clicked on x: %d, y: %d", clickX, clickY);
+				return true;
 			}
 		}
 	}
+	return false;
 }
+
+void initMatrix() {
+	for (int i = 0; i < SIZE; i++) {
+		for (int j = 0; j < SIZE; j++) {
+			primljenaMatrica[i][j] = -1;
+		}
+	}
+} 
+
+bool isItTheEnd() {
+	for (int i = 0; i < SIZE; i++) {
+		for (int j = 0; j < SIZE; j++) {
+			if (primljenaMatrica[i][j] != 0 && primljenaMatrica[i][j] != 1) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void retryLogic() {
+	Rectangle rec1 = { 860, 880, 200, 80 };
+	DrawRectangleLines(860, 880, 200, 80, BLACK);
+	DrawText("RETRY", 870, 895, 50, BLACK);
+	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+		Vector2 mousePoint = GetMousePosition();
+		if (CheckCollisionPointRec(mousePoint, rec1)) {
+			retry = true;
+		}
+	}
+}
+
+void clearFields() {
+	for (int i = 0; i < SIZE; i++) {
+		for (int j = 0; j < SIZE; j++) {
+			flagged[i][j] = 0;
+		}
+	}
+}
+
 
 #endif

@@ -30,7 +30,12 @@ int main() {
 		}
 
 		DisplayMatrix();
-		zmq_send(responder, displayMatrix, sizeof(displayMatrix), 0);
+		if (matrix[primljeniClick.x][primljeniClick.y] == 1) {
+			zmq_send(responder, matrix, sizeof(displayMatrix), 0);
+		}
+		else {
+			zmq_send(responder, displayMatrix, sizeof(displayMatrix), 0);
+		}
 	}
 
 	return 0;

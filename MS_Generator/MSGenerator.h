@@ -8,6 +8,8 @@
 const int nOfSpaces = SIZE;
 const int nOfBombs = 13;
 
+int retry = 0;
+
 int matrix[SIZE][SIZE];       
 int displayMatrix[SIZE][SIZE]; 
 
