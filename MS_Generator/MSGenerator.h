@@ -88,22 +88,6 @@ void RevealCell(int x, int y) {
 	}
 }
 
-void DisplayMatrix() {
-	printf("\n");
-	for (int i = 0; i < nOfSpaces; i++) {
-		for (int j = 0; j < nOfSpaces; j++) {
-			if (displayMatrix[i][j] == HIDDEN) {
-				printf("x ");
-			}
-			else if (displayMatrix[i][j] == -1 && matrix[i][j] == 1) {
-				printf("* ");
-			}
-			else {
-				printf("%d ", displayMatrix[i][j]);
-			}
-		}
-		putchar('\n');
-	}
-}
+
 
 #endif

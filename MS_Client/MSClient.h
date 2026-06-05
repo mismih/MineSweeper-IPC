@@ -67,22 +67,7 @@ void drawGrid() {
 	}
 }
 
-void testDrawMatrix() {
-	for (int i = 0; i < SIZE; i++) {
-		for (int j = 0; j < SIZE; j++) {
-			if (primljenaMatrica[i][j] == HIDDEN) {
-				printf("x ");
-			}
-			else if (primljenaMatrica[i][j] == -1) {
-				printf("* ");
-			}
-			else {
-				printf("%d ", primljenaMatrica[i][j]);
-			}
-		}
-		putchar('\n');
-	}
-}
+
 
 void initGrids() {
 	int rows = 10;

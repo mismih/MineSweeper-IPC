@@ -28,7 +28,6 @@ int main() {
 	SetTargetFPS(60);
 
 	initMatrix();
-	testDrawMatrix();
 	initGrids();
 
 	while (!WindowShouldClose()) {
@@ -44,7 +43,6 @@ int main() {
 			if (whichFieldWasClicked(mousePoint)) {
 				probniKlik.x = clickX;
 				probniKlik.y = clickY;
-				testDrawMatrix();
 
 				zmq_send(requester, &probniKlik, sizeof(userClick), 0);
 				zmq_recv(requester, primljenaMatrica, sizeof(primljenaMatrica), 0);

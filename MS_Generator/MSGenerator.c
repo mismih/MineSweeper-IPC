@@ -35,7 +35,6 @@ int main() {
 			RevealCell(primljeniClick.x, primljeniClick.y);
 		}
 
-		DisplayMatrix();
 		if (matrix[primljeniClick.x][primljeniClick.y] == 1) {
 			zmq_send(responder, matrix, sizeof(displayMatrix), 0);
 		}
