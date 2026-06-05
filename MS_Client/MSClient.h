@@ -7,23 +7,18 @@
 
 const int nOfSpaces = SIZE;
 const int nOfBombs = 13;
-
 const int screenWidth = 1920;
 const int screenHeight = 1080;
 
 int fieldsX[100];
 int fieldsY[100];
-
 int matrix[SIZE][SIZE];
 int displayMatrix[SIZE][SIZE];
 int primljenaMatrica[SIZE][SIZE];
 int flagged[SIZE][SIZE];
-
 int clickX;
 int clickY;
-
 int flags = 13;
-
 float vremeAkumulator = 0.0f;
 int protekleSekunde = 0;
 
@@ -35,6 +30,10 @@ typedef struct {
 
 bool over = false;
 bool retry = false;
+bool isMenu = true;
+bool menuIs = true;
+bool predatHighScore = false;
+bool edgeScore = false;
 
 void drawGrid() {
 	int rows = 10;
@@ -50,7 +49,7 @@ void drawGrid() {
 
 			if (primljenaMatrica[i][j] == HIDDEN && flagged[i][j] != 1) {
 				DrawRectangle(x, y, cellSize, cellSize, LIGHTGRAY);
-			} 
+			}
 			else if (primljenaMatrica[i][j] == 1 && over == true) {
 				DrawRectangle(x, y, cellSize, cellSize, RED);
 			}
@@ -103,13 +102,9 @@ void initGrids() {
 		for (int j = 0; j < cols; j++) {
 			int pos = i * 10 + j;
 			fieldsX[pos] = startX + j * (cellSize + padding);
-			//printf("x[%d]: %d ", place, fieldsX[i * 10 + j]);
 			fieldsY[pos] = startY + i * (cellSize + padding);
-			//printf("y[%d]: %d ", place, fieldsY[i * 10 + j]);
 		}
-		// putchar("\n");
 	}
-	
 }
 
 bool whichFieldWasClicked(Vector2 mousePoint) {
@@ -134,7 +129,7 @@ void initMatrix() {
 			primljenaMatrica[i][j] = -1;
 		}
 	}
-} 
+}
 
 bool isItTheEnd() {
 	for (int i = 0; i < SIZE; i++) {
@@ -167,5 +162,71 @@ void clearFields() {
 	}
 }
 
+void drawMenu() {
+	DrawText("IPC MINESWEEPER", 510, 250, 100, BLACK);
+
+	Vector2 mousePos = GetMousePosition();
+
+	Rectangle startBtn = { 810, 500, 300, 70 };
+	Rectangle exitBtn = { 810, 600, 300, 70 };
+
+	bool hoverStart = CheckCollisionPointRec(mousePos, startBtn);
+	DrawRectangleRec(startBtn, hoverStart ? LIGHTGRAY : GRAY);
+	DrawText("START", startBtn.x + 95, startBtn.y + 18, 35, BLACK);
+
+	if (hoverStart && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+		menuIs = false;
+	}
+
+	bool hoverExit = CheckCollisionPointRec(mousePos, exitBtn);
+	DrawRectangleRec(exitBtn, hoverExit ? LIGHTGRAY : GRAY);
+	DrawText("EXIT", exitBtn.x + 105, exitBtn.y + 18, 35, BLACK);
+
+	if (hoverExit && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+		exit(0);
+	}
+}
+
+bool didPlayerWin() {
+	int skrivenaPolja = 0;
+
+	for (int i = 0; i < SIZE; i++) {
+		for (int j = 0; j < SIZE; j++) {
+			if (primljenaMatrica[i][j] == HIDDEN) {
+				skrivenaPolja++;
+			}
+		}
+	}
+
+	if (skrivenaPolja == 13) {
+		return true;
+	}
+
+	return false;
+}
+
+int highScore() {
+	int best = INT_MAX;
+	FILE* file = fopen("highscore.txt", "r");
+
+	if (file != NULL) {
+		fscanf(file, "%d", &best);
+		fclose(file);
+	}
+
+	return best;
+}
+
+void checkScore(int cur) {
+	int old = highScore();
+
+	if (cur < old) {
+		FILE* fajl = fopen("highscore.txt", "w");
+		if (fajl != NULL) {
+			fprintf(fajl, "%d", cur);
+			fclose(fajl);
+		}
+	}
+}
 
 #endif

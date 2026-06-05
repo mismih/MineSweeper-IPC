@@ -25,6 +25,12 @@ int main() {
 		zmq_recv(responder, &primljeniClick, sizeof(userClick), 0);
 		printf("Click recieved on: (%d, %d) type: %c\n", primljeniClick.x, primljeniClick.y, primljeniClick.type);
 
+		if (primljeniClick.type == 'f') {
+			InitMatrix();
+			zmq_send(responder, displayMatrix, sizeof(displayMatrix), 0);
+			continue;
+		}
+
 		if (primljeniClick.type == 'r') {
 			RevealCell(primljeniClick.x, primljeniClick.y);
 		}
@@ -37,6 +43,7 @@ int main() {
 			zmq_send(responder, displayMatrix, sizeof(displayMatrix), 0);
 		}
 	}
+
 
 	return 0;
 }
