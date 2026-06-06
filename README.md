@@ -1,4 +1,4 @@
-I wanna make a "simple" game engine, and that includes knowing how to use inter-process communication, so i wanna learn it by making a simple project. Basically i have 2 programs, one is generating the matrix and one is drawing.
+IPC minesweeper made in raylib with c. Made so i can understand ipc better.
 
 RUN BOTH .exe FILES
 
