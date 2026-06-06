@@ -2,7 +2,7 @@ I wanna make a "simple" game engine, and that includes knowing how to use inter-
 
 RUN BOTH .exe FILES
 
-#GAMEPLAY:
+GAMEPLAY:
 There isn't much to say, but you got a start button and a exit (self explanatory) .
 Left click on field to reveal field, right click to place a flag (13 is max)
 
