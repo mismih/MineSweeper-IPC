@@ -7,8 +7,8 @@
 
 const int nOfSpaces = SIZE;
 const int nOfBombs = 13;
-const int screenWidth = 1920;
-const int screenHeight = 1080;
+const int screenWidth = 800;
+const int screenHeight = 600;
 
 int fieldsX[100];
 int fieldsY[100];
@@ -25,7 +25,7 @@ int protekleSekunde = 0;
 typedef struct {
 	int x;
 	int y;
-	char type; // o - open  f - flag
+	char type;
 } userClick;
 
 bool over = false;
@@ -39,7 +39,6 @@ void drawGrid() {
 	int rows = 10;
 	int cols = 10;
 	int cellSize = 40;
-	int padding = 4;
 
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < cols; j++) {
@@ -50,6 +49,9 @@ void drawGrid() {
 			if (primljenaMatrica[i][j] == HIDDEN && flagged[i][j] != 1) {
 				DrawRectangle(x, y, cellSize, cellSize, LIGHTGRAY);
 			}
+			else if (primljenaMatrica[i][j] == 0) {
+				DrawRectangle(x, y, cellSize, cellSize, WHITE);
+			}
 			else if (primljenaMatrica[i][j] == 1 && over == true) {
 				DrawRectangle(x, y, cellSize, cellSize, RED);
 			}
@@ -57,17 +59,17 @@ void drawGrid() {
 				DrawRectangle(x, y, cellSize, cellSize, RED);
 			}
 			else if (primljenaMatrica[i][j] == 1) {
+				DrawRectangle(x, y, cellSize, cellSize, WHITE);
 				DrawText(TextFormat("%d", primljenaMatrica[i][j]), x + 13, y + 2, cellSize, BLACK);
 			}
 			else if (primljenaMatrica[i][j] > 1) {
+				DrawRectangle(x, y, cellSize, cellSize, WHITE);
 				DrawText(TextFormat("%d", primljenaMatrica[i][j]), x + 10, y + 2, cellSize, BLACK);
 			}
 			DrawRectangleLines(x, y, cellSize, cellSize, GRAY);
 		}
 	}
 }
-
-
 
 void initGrids() {
 	int rows = 10;
@@ -76,10 +78,9 @@ void initGrids() {
 	int padding = 4;
 
 	int gridWidth = cols * (cellSize + padding) - padding;
-	int gridHeight = rows * (cellSize + padding) - padding;
 
 	int startX = (screenWidth - gridWidth) / 2;
-	int startY = (screenHeight - gridHeight) / 2;
+	int startY = 60;
 	fieldsX[0] = startX;
 	fieldsY[0] = startY;
 
@@ -100,7 +101,7 @@ bool whichFieldWasClicked(Vector2 mousePoint) {
 			if (CheckCollisionPointRec(mousePoint, buttonRect)) {
 				clickX = i;
 				clickY = j;
-				printf("User clicked on x: %d, y: %d", clickX, clickY);
+				printf("User clicked on x: %d, y: %d\n", clickX, clickY);
 				return true;
 			}
 		}
@@ -128,9 +129,9 @@ bool isItTheEnd() {
 }
 
 void retryLogic() {
-	Rectangle rec1 = { 860, 880, 200, 80 };
-	DrawRectangleLines(860, 880, 200, 80, BLACK);
-	DrawText("RETRY", 870, 895, 50, BLACK);
+	Rectangle rec1 = { 320, 545, 160, 40 };
+	DrawRectangleLines(320, 545, 160, 40, BLACK);
+	DrawText("RETRY", 365, 553, 24, BLACK);
 	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 		Vector2 mousePoint = GetMousePosition();
 		if (CheckCollisionPointRec(mousePoint, rec1)) {
@@ -148,16 +149,16 @@ void clearFields() {
 }
 
 void drawMenu() {
-	DrawText("IPC MINESWEEPER", 510, 250, 100, BLACK);
+	DrawText("IPC MINESWEEPER", 170, 120, 50, BLACK);
 
 	Vector2 mousePos = GetMousePosition();
 
-	Rectangle startBtn = { 810, 500, 300, 70 };
-	Rectangle exitBtn = { 810, 600, 300, 70 };
+	Rectangle startBtn = { 250, 260, 300, 60 };
+	Rectangle exitBtn = { 250, 350, 300, 60 };
 
 	bool hoverStart = CheckCollisionPointRec(mousePos, startBtn);
 	DrawRectangleRec(startBtn, hoverStart ? LIGHTGRAY : GRAY);
-	DrawText("START", startBtn.x + 95, startBtn.y + 18, 35, BLACK);
+	DrawText("START", startBtn.x + 95, startBtn.y + 15, 30, BLACK);
 
 	if (hoverStart && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 		menuIs = false;
@@ -165,7 +166,7 @@ void drawMenu() {
 
 	bool hoverExit = CheckCollisionPointRec(mousePos, exitBtn);
 	DrawRectangleRec(exitBtn, hoverExit ? LIGHTGRAY : GRAY);
-	DrawText("EXIT", exitBtn.x + 105, exitBtn.y + 18, 35, BLACK);
+	DrawText("EXIT", exitBtn.x + 105, exitBtn.y + 15, 30, BLACK);
 
 	if (hoverExit && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 		exit(0);

@@ -7,11 +7,9 @@
 
 const int nOfSpaces = SIZE;
 const int nOfBombs = 13;
-
 int retry = 0;
-
-int matrix[SIZE][SIZE];       
-int displayMatrix[SIZE][SIZE]; 
+int matrix[SIZE][SIZE];
+int displayMatrix[SIZE][SIZE];
 
 void InitMatrix();
 void RevealCell(int x, int y);
@@ -21,7 +19,7 @@ int IsNeighborWithBomb(int x, int y);
 typedef struct {
 	int x;
 	int y;
-	char type; // o - open  f - flag
+	char type;
 } userClick;
 
 void InitMatrix() {
@@ -65,7 +63,6 @@ int IsNeighborWithBomb(int x, int y) {
 	return count;
 }
 
-
 void RevealCell(int x, int y) {
 	if (x < 0 || x >= nOfSpaces || y < 0 || y >= nOfSpaces) return;
 	if (displayMatrix[x][y] != HIDDEN) return;
@@ -87,7 +84,5 @@ void RevealCell(int x, int y) {
 		}
 	}
 }
-
-
 
 #endif

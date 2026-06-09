@@ -11,19 +11,19 @@ int main() {
 	void* context = zmq_ctx_new();
 	void* responder = zmq_socket(context, ZMQ_REP);
 
-	int rc = zmq_bind(responder, "tcp://*:5555");
+	int rc = zmq_bind(responder, "tcp://*:42769");
 	if (rc != 0) {
 		printf("Server start error\n");
 		return -1;
 	}
 
-	puts("Minesweeper server started succesfully and listening on port 5555....\n");
+	puts("Minesweeper server started successfully and listening on port 42769...\n");
 
 	while (1) {
 		userClick primljeniClick;
 
 		zmq_recv(responder, &primljeniClick, sizeof(userClick), 0);
-		printf("Click recieved on: (%d, %d) type: %c\n", primljeniClick.x, primljeniClick.y, primljeniClick.type);
+		printf("Click received on: (%d, %d) type: %c\n", primljeniClick.x, primljeniClick.y, primljeniClick.type);
 
 		if (primljeniClick.type == 'f') {
 			InitMatrix();
@@ -42,7 +42,6 @@ int main() {
 			zmq_send(responder, displayMatrix, sizeof(displayMatrix), 0);
 		}
 	}
-
 
 	return 0;
 }

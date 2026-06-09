@@ -11,7 +11,7 @@ int main() {
 	void* context = zmq_ctx_new();
 	void* requester = zmq_socket(context, ZMQ_REQ);
 
-	int rc = zmq_connect(requester, "tcp://localhost:5555");
+	int rc = zmq_connect(requester, "tcp://127.0.0.1:42769");
 	if (rc != 0) {
 		puts("Couldnt connect to the server\n");
 		zmq_close(requester);
@@ -46,6 +46,16 @@ int main() {
 
 				zmq_send(requester, &probniKlik, sizeof(userClick), 0);
 				zmq_recv(requester, primljenaMatrica, sizeof(primljenaMatrica), 0);
+
+				for (int i = 0; i < SIZE; i++) {
+					for (int j = 0; j < SIZE; j++) {
+						if (primljenaMatrica[i][j] != HIDDEN && flagged[i][j] == 1) {
+							flagged[i][j] = 0;
+							flags++;
+						}
+					}
+				}
+
 				if (isItTheEnd()) {
 					over = true;
 				}
@@ -57,7 +67,7 @@ int main() {
 				probniKlik.x = clickX;
 				probniKlik.y = clickY;
 				if (primljenaMatrica[probniKlik.x][probniKlik.y] == HIDDEN) {
-					if (flagged[clickX][clickY] == 1 && flags > 0) {
+					if (flagged[clickX][clickY] == 1) {
 						flagged[clickX][clickY] = 0;
 						flags++;
 					}
@@ -68,7 +78,9 @@ int main() {
 				}
 			}
 		}
+
 		if (over) {
+			DrawText("GAME OVER", 295, 505, 35, RED);
 			retryLogic();
 		}
 		else if (!isMenu && !didPlayerWin()) {
@@ -88,23 +100,23 @@ int main() {
 			printf("Desilo se");
 			retry = false;
 			over = false;
-			predatHighScore = false; // Resetujemo zastavicu za sledeću partiju
+			predatHighScore = false;
 		}
 
 		if (!isMenu) {
-			DrawText(TextFormat("Bombs found: %d", 13 - flags), 30, 30, 30, BLACK);
-			DrawText(TextFormat("Time: %d", protekleSekunde), 30, 70, 30, BLACK);
+			DrawText(TextFormat("Bombs: %d", 13 - flags), 20, 20, 25, BLACK);
+			DrawText(TextFormat("Time: %d", protekleSekunde), 320, 20, 25, BLACK);
 
 			int trenutniRekord = highScore();
-			if (trenutniRekord == INT_MAX && edgeScore == false) DrawText("Best score: N/a", 30, 110, 30, BLACK);
+			if (trenutniRekord == INT_MAX && edgeScore == false) DrawText("Best: N/a", 580, 20, 25, BLACK);
 			else {
-				DrawText(TextFormat("Best score: %d", trenutniRekord), 30, 110, 30, BLACK);
-				edgeScore == true;  // if u really get max int
+				DrawText(TextFormat("Best: %d", trenutniRekord), 580, 20, 25, BLACK);
+				edgeScore = true;
 			}
 		}
 
 		if (didPlayerWin() && !isMenu) {
-			DrawText("YOU WIN!", 830, 200, 50, RED);
+			DrawText("YOU WIN!", 315, 505, 35, GREEN);
 			retryLogic();
 
 			if (!predatHighScore) {
