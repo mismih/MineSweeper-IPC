@@ -1,6 +1,7 @@
 IPC minesweeper made in raylib with c. Made so i can understand ipc better.
 
-RUN BOTH .exe FILES
+TO RUN, MAKE SURE TO PUT SCALE ON 100%
+On windows: Settings > System > Display > Scale & Layout
 
 GAMEPLAY:
 There isn't much to say, but you got a start button and a exit (self explanatory) .
